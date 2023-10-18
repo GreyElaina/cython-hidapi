@@ -6,10 +6,9 @@ import time
 # enumerate USB devices
 
 for d in hid.enumerate():
-    keys = list(d.keys())
-    keys.sort()
+    keys = sorted(d.keys())
     for key in keys:
-        print("%s : %s" % (key, d[key]))
+        print(f"{key} : {d[key]}")
     print()
 
 # try opening a device, then perform write and read
@@ -18,9 +17,9 @@ try:
     print("Opening the device")
     h.open(0x534C, 0x0001)  # TREZOR VendorID/ProductID
 
-    print("Manufacturer: %s" % h.get_manufacturer_string())
-    print("Product: %s" % h.get_product_string())
-    print("Serial No: %s" % h.get_serial_number_string())
+    print(f"Manufacturer: {h.get_manufacturer_string()}")
+    print(f"Product: {h.get_product_string()}")
+    print(f"Serial No: {h.get_serial_number_string()}")
 
     # enable non-blocking mode
     h.set_nonblocking(1)
@@ -35,8 +34,7 @@ try:
     # read back the answer
     print("Read the data")
     while True:
-        d = h.read(64)
-        if d:
+        if d := h.read(64):
             print(d)
         else:
             break

@@ -58,10 +58,9 @@ if sys.platform.startswith("darwin"):
     macos_sdk_path = (
         subprocess.check_output(["xcrun", "--show-sdk-path"]).decode().strip()
     )
-    os.environ["CFLAGS"] = (
-        '-isysroot "%s" -framework IOKit -framework CoreFoundation -framework AppKit'
-        % macos_sdk_path
-    )
+    os.environ[
+        "CFLAGS"
+    ] = f'-isysroot "{macos_sdk_path}" -framework IOKit -framework CoreFoundation -framework AppKit'
     os.environ["LDFLAGS"] = ""
     if system_hidapi == True:
         libs.append("hidapi")
@@ -107,10 +106,10 @@ def find_version():
     filename = os.path.join(tld, 'hid.pyx')
     with open(filename) as f:
         text = f.read()
-    match = re.search(r"^__version__ = \"(.*)\"$", text, re.MULTILINE)
-    if not match:
+    if match := re.search(r"^__version__ = \"(.*)\"$", text, re.MULTILINE):
+        return match.group(1)
+    else:
         raise RuntimeError('cannot find version')
-    return match.group(1)
 
 
 setup(
